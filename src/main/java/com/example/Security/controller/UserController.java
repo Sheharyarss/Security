@@ -28,10 +28,18 @@ public class UserController {
         @Autowired
         JwtUtil jwtUtill;
 
+
+
+        /**
+         * This will generate token for user
+         * @param loginCredentials
+         * @return
+         */
+
         @PostMapping("/token")
         public ResponseEntity<AuthenticationResponse> generateToken(@RequestBody LoginCredentials loginCredentials){
-                       this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                                loginCredentials.getUsername(),loginCredentials.getPassword()));
+                this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                        loginCredentials.getUsername(),loginCredentials.getPassword()));
 
                 UserDetails userDetails=myUserDetailService.loadUserByUsername(loginCredentials.getUsername());
                 String jwtToken=jwtUtill.generateToken(userDetails);
@@ -39,15 +47,47 @@ public class UserController {
                 return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
         }
 
+        /**
+         * This will register user
+         * @param userDto
+         * @return
+         */
+
+        @PostMapping("/user")
+        public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto){
+                return ResponseEntity.ok(userService.registerUser(userDto));
+        }
+
+        /**
+         * This will get all user
+         * @return
+         */
         @GetMapping("/user")
         public ResponseEntity<List<UserDto>> getAllUser(){
             return ResponseEntity.ok(userService.getAllUser());
         }
 
-        @PreAuthorize("hasRole('ROLE_USER' or 'ROLE_ADMIN')")
-        @PostMapping("/test")
+        /**
+         * This will getUser by id
+         * @param id
+         * @return
+         */
+        @GetMapping("/user/{id}")
+        public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
+                return ResponseEntity.ok(userService.getUserById(id));
+        }
+
+        @PreAuthorize("hasRole('ROLE_USER')")
+        @GetMapping("/test1")
         public ResponseEntity<String> tester(){
-                return ResponseEntity.ok("Test");
+                return ResponseEntity.ok("Only User can access this api");
+        }
+
+
+        @PreAuthorize("hasRole('ROLE_ADMIN')")
+        @GetMapping("/test2")
+        public ResponseEntity<String> tester2(){
+                return ResponseEntity.ok("Only Admin can access this api");
         }
 
 }

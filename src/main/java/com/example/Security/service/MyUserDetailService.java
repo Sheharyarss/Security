@@ -14,14 +14,14 @@ import org.springframework.stereotype.Service;
 public class MyUserDetailService implements UserDetailsService {
 
         @Autowired
-    UserRepo userRepo;
+        UserRepo userRepo;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user=userRepo.findByEmail(email);
-        if(user == null){
-            throw new UsernameNotFoundException("Invalid Email ! No User Exist !");
+        @Override
+        public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+            User user=userRepo.findByEmail(email);
+            if(user == null){
+                throw new UsernameNotFoundException("Invalid Email ! No User Exist !");
+            }
+            return new CustomUserDetail(user);
         }
-        return new CustomUserDetail(user);
-    }
 }
