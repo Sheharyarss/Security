@@ -39,9 +39,9 @@ public class UserController {
         @PostMapping("/token")
         public ResponseEntity<AuthenticationResponse> generateToken(@RequestBody LoginCredentials loginCredentials){
                 this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                        loginCredentials.getUsername(),loginCredentials.getPassword()));
+                        loginCredentials.getEmail(),loginCredentials.getPassword()));
 
-                UserDetails userDetails=myUserDetailService.loadUserByUsername(loginCredentials.getUsername());
+                UserDetails userDetails=myUserDetailService.loadUserByUsername(loginCredentials.getEmail());
                 String jwtToken=jwtUtill.generateToken(userDetails);
 
                 return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
